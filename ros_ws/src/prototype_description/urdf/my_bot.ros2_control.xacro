@@ -14,11 +14,27 @@
             <command_interface name="position" />
             <state_interface name="position" />
         </joint>
+        <joint name="Revolute_3">
+            <command_interface name="position" />
+            <state_interface name="position" />
+        </joint>
+        <joint name="Revolute_4">
+            <command_interface name="position" />
+            <state_interface name="position" />
+        </joint>
         <joint name="Revolute_5">
             <command_interface name="position" />
             <state_interface name="position" />
         </joint>
         <joint name="Revolute_6">
+            <command_interface name="position" />
+            <state_interface name="position" />
+        </joint>
+        <joint name="Revolute_7">
+            <command_interface name="position" />
+            <state_interface name="position" />
+        </joint>
+        <joint name="Revolute_8">
             <command_interface name="position" />
             <state_interface name="position" />
         </joint>

@@ -7,6 +7,17 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(example_interfaces REQUIRED)
+find_package(std_msgs REQUIRED)
+
+add_executable(calculate_angle src/calculate_angle.cpp)   #"cpp_node" name of executable
+ament_target_dependencies(calculate_angle rclcpp example_interfaces std_msgs)         #these two lines create an executable but not install it
+
+install(TARGETS            #installs the executable
+  calculate_angle
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 install(
   DIRECTORY launch urdf meshes config                   #directory which needs to be installed
