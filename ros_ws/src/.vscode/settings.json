@@ -12,5 +12,9 @@
         "/home/nikhil/Work/ROS2/ros2_ws_2/install/my_robot_interfaces/lib/python3.12/site-packages",
         "/home/nikhil/Work/ros2/microros_ws/install/micro_ros_msgs/lib/python3.12/site-packages",
         "/opt/ros/jazzy/lib/python3.12/site-packages"
-    ]
+    ],
+    "files.associations": {
+        "functional": "cpp",
+        "array": "cpp"
+    }
 }

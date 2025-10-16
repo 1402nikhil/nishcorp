@@ -20,6 +20,8 @@
 
     <node pkg="controller_manager" exec="spawner" args="arm_joints_controller_2" />
 
+    <node pkg="prototype_description" exec="calculate_angle" />
+
     <node pkg="rviz2" exec="rviz2" output="screen" 
           args="-d $(var rviz_config_path)" />
 </launch>

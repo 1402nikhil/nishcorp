@@ -19,11 +19,17 @@ class CalculateJointAnglesNode : public rclcpp::Node
 public:
     CalculateJointAnglesNode() : Node("calculate_joint_angles")
     {
-        pos_subs_ = this->create_subscription<example_interfaces::msg::Int32>(
+        num_pos_subs_ = this->create_subscription<example_interfaces::msg::Int32>(
+            "pos_num", 10,
+            std::bind(&CalculateJointAnglesNode::callbackPosNum, this, std::placeholders::_1));
+
+        pos_subs_ = this->create_subscription<std_msgs::msg::Float64MultiArray>(
             "bot_position", 10,
             std::bind(&CalculateJointAnglesNode::callbackBotPosition, this, std::placeholders::_1));
+
         arm_joints_cont_1_subs_ = this->create_publisher<std_msgs::msg::Float64MultiArray>(
             "arm_joints_controller_1/commands", 10);
+
         arm_joints_cont_2_subs_ = this->create_publisher<std_msgs::msg::Float64MultiArray>(
             "arm_joints_controller_2/commands", 10);
 
@@ -75,32 +81,43 @@ public:
         return {theta1, theta2};
     }
 
-    void calculateAngles(){
+    void calculateAngles(double coordinates[3]){
+
+        x_trans0 = coordinates[0] * M_PI / 180.0 ;
+        y_trans0 = coordinates[1] * M_PI / 180.0 ;
+        theta_y0 = coordinates[2] * M_PI / 180.0 ;
 
         transform(corners, edge_points, x_trans0, y_trans0, theta_y0, new_corners, new_edges);
 
         // Fixed foot positions (on ground)
         Vec3 foot1_fixed = new_edges[0];
-        Vec3 foot2_fixed = new_edges[1];
+        // Vec3 foot2_fixed = new_edges[1];
         foot1_fixed.y = -2.0;
-        foot2_fixed.y = -2.0;
+        // foot2_fixed.y = -2.0;
 
         // Inverse Kinematics for both legs
         auto [theta1_leg1, theta2_leg1] = inverse_leg_xy(foot1_fixed, new_edges[0], a1, a2);
-        auto [theta1_leg2, theta2_leg2] = inverse_leg_xy(foot2_fixed, new_edges[1], a1, a2);
+        // auto [theta1_leg2, theta2_leg2] = inverse_leg_xy(foot2_fixed, new_edges[1], a1, a2);
 
-        // Convert to degrees
-        double deg1_leg1 = theta1_leg1 * 180.0 / M_PI;
-        double deg2_leg1 = theta2_leg1 * 180.0 / M_PI;
-        double deg1_leg2 = theta1_leg2 * 180.0 / M_PI;
-        double deg2_leg2 = theta2_leg2 * 180.0 / M_PI;
+        auto data = std_msgs::msg::Float64MultiArray();
 
-        RCLCPP_INFO(this->get_logger(), "Angles: %f, %f, %f, %f", deg1_leg1, deg1_leg2, deg2_leg1, deg2_leg2);
+        data.data = {theta1_leg1, theta2_leg1};
+
+        arm_joints_cont_1_subs_ ->publish(data);
+        arm_joints_cont_2_subs_ ->publish(data);
+
+        RCLCPP_INFO(this->get_logger(), "BotPosition: Angles: %f, %f", data.data[0], data.data[1]);
     }
 
 private:
 
-    void callbackBotPosition(const example_interfaces::msg::Int32::SharedPtr msg)
+    void callbackBotPosition(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
+    {
+        double coordinates[3] = {msg->data[0], msg->data[1], msg->data[2]};
+        calculateAngles(coordinates);
+    }
+
+    void callbackPosNum(const example_interfaces::msg::Int32::SharedPtr msg)
     {
         float poss[2] = {0, 0};
 
@@ -139,7 +156,7 @@ private:
         arm_joints_cont_1_subs_ ->publish(data);
         arm_joints_cont_2_subs_ ->publish(data);
 
-        RCLCPP_INFO(this->get_logger(), "Angles: %f, %f", data.data[0], data.data[1]);
+        RCLCPP_INFO(this->get_logger(), "PosNum: Angles: %f, %f", data.data[0], data.data[1]);
 
     }
 
@@ -175,7 +192,8 @@ private:
     array<Vec3, 4> new_corners;
     array<Vec3, 2> new_edges;
 
-    rclcpp::Subscription<example_interfaces::msg::Int32>::SharedPtr pos_subs_;
+    rclcpp::Subscription<example_interfaces::msg::Int32>::SharedPtr num_pos_subs_;
+    rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr pos_subs_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr arm_joints_cont_1_subs_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr arm_joints_cont_2_subs_;
 };
