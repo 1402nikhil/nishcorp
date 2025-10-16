@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/nikhil/Work/ROS2/ros2_ws_2/install/my_robot_interfaces/include/**",
+        "/home/nikhil/Work/ros2/microros_ws/install/micro_ros_agent/include/**",
+        "/home/nikhil/Work/ros2/microros_ws/install/micro_ros_msgs/include/**",
+        "/home/nikhil/Work/ROS2/control_ws/install/three_wheel/include/**",
+        "/home/nikhil/Work/ROS2/control_ws/install/diff_drive/include/**",
+        "/opt/ros/jazzy/include/**",
+        "/home/nikhil/Work/Nishcorp robot/nishcorp/ros_ws/src/prototype_description/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ros2",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}

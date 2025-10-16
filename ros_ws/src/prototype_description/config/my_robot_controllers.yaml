@@ -1,0 +1,22 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 50
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    arm_joints_controller_1:
+      type: forward_command_controller/ForwardCommandController
+
+    arm_joints_controller_2:
+      type: forward_command_controller/ForwardCommandController
+
+arm_joints_controller_1:
+  ros__parameters:
+   joints: ["Revolute_1","Revolute_2"]
+   interface_name: "position"
+
+arm_joints_controller_2:
+  ros__parameters:
+   joints: ["Revolute_5","Revolute_6"]
+   interface_name: "position"    
